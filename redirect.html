@@ -2,14 +2,44 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta property="og:title" content="" id="og-title">
-  <meta property="og:description" content="" id="og-desc">
-  <meta property="og:image" content="" id="og-img">
-  <meta property="og:type" content="website">
-  <meta name="twitter:card" content="summary_large_image">
-  <script type="module" src="redirect.js"></script>
+  <title>リダイレクト中...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <p>リダイレクト中です…</p>
+  <p id="status">🔄 リダイレクト中です...</p>
+
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    // あなたの Supabase 情報
+    const supabaseUrl = 'https://khfflcfiwfmfchpbsqph.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoZmZsY2Zpd2ZtZmNocGJzcXBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MDkyODMsImV4cCI6MjA2NzM4NTI4M30.wW0FoCXGZYagQENgOzyEsCF9cWatH6UO5O8ic-T0pdA';
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const status = document.getElementById('status');
+
+    if (!id) {
+      status.textContent = '❌ IDが指定されていません。';
+      throw new Error('No ID');
+    }
+
+    // Supabaseからデータを取得
+    const { data, error } = await supabase
+      .from('links')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      console.error(error);
+      status.textContent = '❌ データが見つかりませんでした。';
+    } else {
+      status.textContent = `✅ "${data.title || data.original_url}" に移動します...`;
+      // 自動で元のURLに飛ぶ
+      window.location.href = data.original_url;
+    }
+  </script>
 </body>
 </html>
