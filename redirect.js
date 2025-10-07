@@ -1,22 +1,27 @@
-import { supabase } from './supabase.js'
+import { supabase } from './supabase.js';
 
-const params = new URLSearchParams(location.search)
-const code = params.get('c')
+async function redirect() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+  if (!id) {
+    document.body.innerHTML = '<h2>エラー: IDが指定されていません</h2>';
+    return;
+  }
 
-if (code) {
-  const { data, error } = await supabase.from('links').select('*').eq('code', code).single()
+  // Supabaseから該当する短縮リンクを取得
+  const { data, error } = await supabase
+    .from('links')
+    .select('*')
+    .eq('id', id)
+    .single();
 
   if (error || !data) {
-    document.body.innerText = 'リンクが存在しません。'
-  } else {
-    // OGP情報をセット
-    document.querySelector('#og-title').setAttribute('content', data.title || 'リンク')
-    document.querySelector('#og-desc').setAttribute('content', data.description || '')
-    document.querySelector('#og-img').setAttribute('content', data.image || '')
-
-    // 1.5秒後に元URLに移動
-    setTimeout(() => {
-      window.location.href = data.url
-    }, 1500)
+    document.body.innerHTML = '<h2>リンクが見つかりません</h2>';
+    return;
   }
+
+  // 本来のURLへリダイレクト
+  window.location.href = data.original_url;
 }
+
+redirect();
