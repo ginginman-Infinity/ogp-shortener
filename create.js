@@ -17,19 +17,19 @@ document.getElementById("create").addEventListener("click", async () => {
     return;
   }
 
-  // ランダムな短縮IDを作る
- const id = crypto.randomUUID();
+  // ランダムな短縮コード（6文字程度）
+  const code = Math.random().toString(36).substring(2, 8);
 
   // Supabaseに保存
   const { error } = await supabase.from("links").insert([
-    { id, url, title, description: desc, image }
+    { code, url, title, description: desc, image }
   ]);
 
   if (error) {
     console.error("Error:", error);
     document.getElementById("result").textContent = "エラー：" + error.message;
   } else {
-    const shortUrl = `https://ginginman-infinity.github.io/ogp-shortener/?id=${id}`;
+    const shortUrl = `https://ginginman-infinity.github.io/ogp-shortener/?code=${code}`;
     document.getElementById("result").innerHTML = `
       ✅ 短縮URL作成成功！<br>
       <a href="${shortUrl}" target="_blank">${shortUrl}</a>
