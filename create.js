@@ -18,7 +18,7 @@ document.getElementById("create").addEventListener("click", async () => {
   }
 
   // ランダムな短縮IDを作る
-  const id = Math.random().toString(36).substring(2, 8);
+ const id = crypto.randomUUID();
 
   // Supabaseに保存
   const { error } = await supabase.from("links").insert([
