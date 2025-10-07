@@ -1,105 +1,38 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+// SupabaseをCDN経由で使う
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-// あなたの Supabase プロジェクト情報
-const supabaseUrl = 'https://khfflcfiwfmfchpbsqph.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk';
+const supabaseUrl = "https://jfpccwjwsgxkpnddnkrn.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk";
+
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// ランダムIDを生成する関数
-function generateId(length = 8) {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return Array.from(crypto.getRandomValues(new Uint8Array(length)))
-    .map(x => chars[x % chars.length])
-    .join('');
-}
-
-// ボタン押下時の処理
-document.getElementById('create').addEventListener('click', async () => {
-  const url = document.getElementById('url').value.trim();
-  const title = document.getElementById('title').value.trim();
-  const desc = document.getElementById('desc').value.trim();
-  const image = document.getElementById('image').value.trim();
-  const result = document.getElementById('result');
+document.getElementById("create").addEventListener("click", async () => {
+  const url = document.getElementById("url").value;
+  const title = document.getElementById("title").value;
+  const desc = document.getElementById("desc").value;
+  const image = document.getElementById("image").value;
 
   if (!url) {
-    result.textContent = '❌ URLを入力してください。';
+    alert("URLを入力してください！");
     return;
   }
 
-  result.textContent = '⏳ 作成中...';
+  // ランダムな短縮IDを作る
+  const id = Math.random().toString(36).substring(2, 8);
 
-  const id = generateId();
-
-  // Supabaseにデータを保存
-  const { error } = await supabase.from('links').insert([
-    { id, original_url: url, title, description: desc, image }
+  // Supabaseに保存
+  const { error } = await supabase.from("links").insert([
+    { id, url, title, description: desc, image }
   ]);
 
   if (error) {
-    console.error(error);
-    result.textContent = '❌ エラーが発生しました。';
-    return;
+    console.error("Error:", error);
+    document.getElementById("result").textContent = "エラー：" + error.message;
+  } else {
+    const shortUrl = `https://ginginman-infinity.github.io/ogp-shortener/?id=${id}`;
+    document.getElementById("result").innerHTML = `
+      ✅ 短縮URL作成成功！<br>
+      <a href="${shortUrl}" target="_blank">${shortUrl}</a>
+    `;
   }
-
-  // GitHub Pages のベースURLを自動取得
-  const baseUrl = window.location.origin;
-  const shortUrl = `${baseUrl}/redirect.html?id=${id}`;
-
-  // 結果を画面に表示
-  result.innerHTML = `
-    ✅ 短縮URLが作成されました！<br>
-    <a href="${shortUrl}" target="_blank">${shortUrl}</a>
-  `;
-});import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-// あなたの Supabase プロジェクト情報
-const supabaseUrl = 'https://jfpcwjwsgxkpnddnkrn.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-// ランダムIDを生成する関数
-function generateId(length = 8) {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  return Array.from(crypto.getRandomValues(new Uint8Array(length)))
-    .map(x => chars[x % chars.length])
-    .join('');
-}
-
-// ボタン押下時の処理
-document.getElementById('create').addEventListener('click', async () => {
-  const url = document.getElementById('url').value.trim();
-  const title = document.getElementById('title').value.trim();
-  const desc = document.getElementById('desc').value.trim();
-  const image = document.getElementById('image').value.trim();
-  const result = document.getElementById('result');
-
-  if (!url) {
-    result.textContent = '❌ URLを入力してください。';
-    return;
-  }
-
-  result.textContent = '⏳ 作成中...';
-
-  const id = generateId();
-
-  // Supabaseにデータを保存
-  const { error } = await supabase.from('links').insert([
-    { id, original_url: url, title, description: desc, image }
-  ]);
-
-  if (error) {
-    console.error(error);
-    result.textContent = '❌ エラーが発生しました。';
-    return;
-  }
-
-  // GitHub Pages のベースURLを自動取得
-  const baseUrl = window.location.origin;
-  const shortUrl = `${baseUrl}/redirect.html?id=${id}`;
-
-  // 結果を画面に表示
-  result.innerHTML = `
-    ✅ 短縮URLが作成されました！<br>
-    <a href="${shortUrl}" target="_blank">${shortUrl}</a>
-  `;
 });
