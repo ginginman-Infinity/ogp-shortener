@@ -2,9 +2,9 @@ import { supabase } from './supabase.js';
 
 async function redirect() {
   const params = new URLSearchParams(window.location.search);
-  const id = params.get('id');
-  if (!id) {
-    document.body.innerHTML = '<h2>エラー: IDが指定されていません</h2>';
+  const code = params.get('code'); // ← idではなくcodeに変更！
+  if (!code) {
+    document.body.innerHTML = '<h2>エラー: codeが指定されていません</h2>';
     return;
   }
 
@@ -12,7 +12,7 @@ async function redirect() {
   const { data, error } = await supabase
     .from('links')
     .select('*')
-    .eq('id', id)
+    .eq('code', code) // ← idではなくcodeで検索
     .single();
 
   if (error || !data) {
@@ -21,7 +21,7 @@ async function redirect() {
   }
 
   // 本来のURLへリダイレクト
-  window.location.href = data.original_url;
+  window.location.href = data.url; // ← original_url → url に修正
 }
 
 redirect();
