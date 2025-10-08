@@ -1,4 +1,3 @@
-// SupabaseをCDN経由で使う
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const supabaseUrl = "https://jfpccwjwsgxkpnddnkrn.supabase.co";
@@ -17,19 +16,25 @@ document.getElementById("create").addEventListener("click", async () => {
     return;
   }
 
-  // ランダムな短縮コード（6文字程度）
+  // 6文字の短縮コードをランダム生成
   const code = Math.random().toString(36).substring(2, 8);
 
-  // Supabaseに保存
+  // Supabaseに保存（idは自動生成される）
   const { error } = await supabase.from("links").insert([
-    { code, url, title, description: desc, image }
+    {
+      code: code,
+      url: url,
+      title: title,
+      description: desc,
+      image: image
+    }
   ]);
 
   if (error) {
     console.error("Error:", error);
     document.getElementById("result").textContent = "エラー：" + error.message;
   } else {
-    const shortUrl = `https://ginginman-infinity.github.io/ogp-shortener/?code=${code}`;
+    const shortUrl = `${window.location.origin}/ogp-shortener/redirect.html?code=${code}`;
     document.getElementById("result").innerHTML = `
       ✅ 短縮URL作成成功！<br>
       <a href="${shortUrl}" target="_blank">${shortUrl}</a>
