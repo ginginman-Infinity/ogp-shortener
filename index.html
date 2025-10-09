@@ -2,23 +2,40 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>短縮URL + プレビュー画像変更ツール</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="create.js"></script>
+  <title>リンク転送中...</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = "https://khfflcfiwfmfchpbsqph.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtoZmZsY2Zpd2ZtZmNocGJzcXBoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MDkyODMsImV4cCI6MjA2NzM4NTI4M30.wW0FoCXGZYagQENgOzyEsCF9cWatH6UO5O8ic-T0pdA";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function main() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+
+      if (!code) {
+        document.body.innerHTML = "❌ IDが指定されていません。";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("links")
+        .select("url")
+        .eq("code", code)
+        .single();
+
+      if (error || !data) {
+        document.body.innerHTML = "❌ リンクが見つかりません。";
+        console.error(error);
+      } else {
+        window.location.href = data.url;
+      }
+    }
+
+    main();
+  </script>
 </head>
 <body>
-  <h1>短縮URL＋任意OGP作成</h1>
-
-  <input id="url" placeholder="短縮したいURL"><br>
-  <input id="title" placeholder="タイトル（任意）"><br>
-  <input id="desc" placeholder="説明（任意）"><br>
-  <input id="image" placeholder="プレビュー画像URL（任意）"><br><br>
-
-  <button id="create">作成</button>
-
-  <p id="result"></p>
-
-  <script type="module" src="create.js"></script>
+  <p>🔁 転送中です...</p>
 </body>
 </html>
