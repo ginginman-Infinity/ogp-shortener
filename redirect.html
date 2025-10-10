@@ -2,44 +2,40 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>リダイレクト中...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>リンク転送中...</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseUrl = "https://jfpccwjwsgxkpnddnkrn.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function main() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+
+      if (!code) {
+        document.body.innerHTML = "❌ IDが指定されていません。";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("links")
+        .select("url")
+        .eq("code", code)
+        .single();
+
+      if (error || !data) {
+        document.body.innerHTML = "❌ リンクが見つかりません。";
+        console.error(error);
+      } else {
+        window.location.href = data.url;
+      }
+    }
+
+    main();
+  </script>
 </head>
 <body>
-  <p id="status">🔄 リダイレクト中です...</p>
-
-  <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-
-    // あなたの Supabase 情報
-    const supabaseUrl = 'https://jfpcwjwsgxkpnddnkrn.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk';
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get('id');
-    const status = document.getElementById('status');
-
-    if (!id) {
-      status.textContent = '❌ IDが指定されていません。';
-      throw new Error('No ID');
-    }
-
-    // Supabaseからデータを取得
-    const { data, error } = await supabase
-      .from('links')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error || !data) {
-      console.error(error);
-      status.textContent = '❌ データが見つかりませんでした。';
-    } else {
-      status.textContent = `✅ "${data.title || data.original_url}" に移動します...`;
-      // 自動で元のURLに飛ぶ
-      window.location.href = data.original_url;
-    }
-  </script>
+  <p>🔁 転送中です...</p>
 </body>
 </html>
