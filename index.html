@@ -1,15 +1,91 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>リンク短縮ツール</title>
+  <meta charset="UTF-8" />
+  <title>OGP付きURL短縮ツール</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fafafa;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      font-size: 15px;
+    }
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+    h2 { text-align: center; }
+  </style>
 </head>
 <body>
-  <h1>🔗 リンク短縮ツール</h1>
-  <input type="text" id="urlInput" placeholder="URLを入力">
-  <button id="createBtn">短縮する</button>
+  <h2>🔗 OGP付きURL短縮ツール</h2>
+
+  <label>元のURL：</label>
+  <input id="url" placeholder="https://example.com" />
+
+  <label>タイトル：</label>
+  <input id="title" placeholder="ページのタイトル（任意）" />
+
+  <label>説明：</label>
+  <textarea id="desc" rows="3" placeholder="説明文（任意）"></textarea>
+
+  <label>画像URL：</label>
+  <input id="image" placeholder="https://example.com/image.jpg" />
+
+  <button id="create">短縮URLを作成</button>
+
   <p id="result"></p>
 
-  <script type="module" src="./create.js"></script>
+  <script>
+    const supabase = window.supabase.createClient(
+      "https://jfpccwjwsgxkpnddnkrn.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk"
+    );
+
+    document.getElementById("create").addEventListener("click", async () => {
+      const url = document.getElementById("url").value.trim();
+      const title = document.getElementById("title").value.trim();
+      const desc = document.getElementById("desc").value.trim();
+      const image = document.getElementById("image").value.trim();
+
+      if (!url) {
+        alert("URLを入力してください！");
+        return;
+      }
+
+      // ランダムな6文字コードを生成
+      const code = Math.random().toString(36).substring(2, 8);
+
+      // Supabaseに保存
+      const { error } = await supabase.from("links").insert([
+        { code, url, title, description: desc, image }
+      ]);
+
+      if (error) {
+        console.error("Error:", error);
+        document.getElementById("result").textContent = "❌ エラー：" + error.message;
+      } else {
+        const shortUrl = `${window.location.origin}/ogp/${code}`;
+        document.getElementById("result").innerHTML = `
+          ✅ 短縮URL作成成功！<br>
+          <a href="${shortUrl}" target="_blank">${shortUrl}</a>
+        `;
+      }
+    });
+  </script>
 </body>
 </html>
