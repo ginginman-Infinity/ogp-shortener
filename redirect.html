@@ -2,40 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>リンク転送中...</title>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script>
-    const supabaseUrl = "https://jfpccwjwsgxkpnddnkrn.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk";
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-    async function main() {
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-
-      if (!code) {
-        document.body.innerHTML = "❌ IDが指定されていません。";
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("links")
-        .select("url")
-        .eq("code", code)
-        .single();
-
-      if (error || !data) {
-        document.body.innerHTML = "❌ リンクが見つかりません。";
-        console.error(error);
-      } else {
-        window.location.href = data.url;
-      }
-    }
-
-    main();
-  </script>
+  <title>リダイレクト中...</title>
 </head>
 <body>
-  <p>🔁 転送中です...</p>
+  <h2>🔄 リダイレクト中...</h2>
+  <script type="module" src="./redirect.js"></script>
 </body>
 </html>
