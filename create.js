@@ -22,7 +22,7 @@ async function createLink() {
   }
 
   // 短縮URL表示
-  const shortUrl = `${window.location.origin}/redirect.html?code=${code}`;
+const shortUrl = `${window.location.origin}/ogp-shortener/redirect.html?code=${code}`;
   result.innerHTML = `
     ✅ 短縮URLが作成されました！<br>
     <a href="${shortUrl}" target="_blank">${shortUrl}</a>
