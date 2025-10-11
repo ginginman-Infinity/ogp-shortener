@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8"><title>Redirecting...</title></head>
+  <body>
+    <script>
+      const path = location.pathname.replace(/^\/+/, ""); // 先頭の / を消す
+      if (path) {
+        // redirect.html に code パラメータ付きで転送
+        location.replace(`/redirect.html?code=${encodeURIComponent(path)}`);
+      } else {
+        location.replace("/");
+      }
+    </script>
+  </body>
+</html>
