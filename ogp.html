@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>Loading...</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const supabase = window.supabase.createClient(
+      "https://jfpccwjwsgxkpnddnkrn.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk"
+    );
+
+    async function main() {
+      const code = window.location.pathname.split("/").pop();
+
+      const { data } = await supabase
+        .from("links")
+        .select("*")
+        .eq("code", code)
+        .single();
+
+      if (data) {
+        // ページにOGPタグを動的に追加
+        document.head.innerHTML += `
+          <meta property="og:title" content="${data.title}">
+          <meta property="og:description" content="${data.description}">
+          <meta property="og:image" content="${data.image}">
+          <meta property="og:url" content="${data.url}">
+          <meta name="twitter:card" content="summary_large_image">
+        `;
+
+        // ページタイトル更新
+        document.title = data.title || "リンク転送中...";
+
+        // 実際のページへリダイレクト
+        setTimeout(() => { window.location.href = data.url; }, 1000);
+      } else {
+        document.body.innerHTML = "❌ OGP情報が見つかりません。";
+      }
+    }
+
+    main();
+  </script>
+</head>
+<body>
+  <p>🔁 OGP情報を読み込み中...</p>
+</body>
+</html>
