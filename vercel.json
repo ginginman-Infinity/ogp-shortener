@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/ogp/[code].js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    { "src": "/api/ogp/(.*)", "dest": "/api/ogp/[code].js" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
