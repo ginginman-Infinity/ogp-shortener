@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>リンク短縮ツール</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL短縮ツール</title>
 </head>
-<body style="font-family: sans-serif; text-align: center; margin-top: 40px;">
-  <h1>🔗 リンク短縮ツール</h1>
+<body>
+  <h1>URL短縮ツール</h1>
 
-  <div style="margin: 20px auto; max-width: 400px;">
-    <input id="url" placeholder="短縮したいURL" style="width:100%;padding:10px;margin-bottom:10px;"><br>
-    <input id="title" placeholder="タイトル (任意)" style="width:100%;padding:10px;margin-bottom:10px;"><br>
-    <input id="desc" placeholder="説明 (任意)" style="width:100%;padding:10px;margin-bottom:10px;"><br>
-    <input id="image" placeholder="画像URL (任意)" style="width:100%;padding:10px;margin-bottom:10px;"><br>
-    <button id="create" style="padding:10px 20px;">短縮リンクを作成</button>
-  </div>
+  <input id="url" placeholder="元のURLを入力">
+  <input id="title" placeholder="タイトルを入力">
+  <input id="desc" placeholder="説明を入力">
+  <button id="create">短縮URLを作成</button>
 
-  <div id="result" style="margin-top: 20px; font-size: 1.1em;"></div>
+  <p id="result"></p>
 
-  <script type="module" src="./create.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
