@@ -27,7 +27,7 @@ document.getElementById("create").addEventListener("click", async () => {
   }
 
   // ✅ VercelのOGP対応URLを短縮URLに使用
-  const shortUrl = `https://ogp-shortener.vercel.app/api/ogp/${code}`;
+ const shortUrl = `https://ogp-shortener-diy7xwb3y-ginginman-infinitys-projects.vercel.app/api/ogp/${id}`;
   document.getElementById("result").innerHTML = `
     ✅ 短縮URL作成成功！<br>
     <a href="${shortUrl}" target="_blank">${shortUrl}</a>
