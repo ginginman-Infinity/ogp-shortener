@@ -9,6 +9,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 export default async function handler(req, res) {
   const { code } = req.query;
 
+  // Supabaseから対象データ取得
   const { data, error } = await supabase
     .from("links")
     .select("*")
@@ -19,7 +20,7 @@ export default async function handler(req, res) {
     return res.status(404).send("リンクが見つかりません");
   }
 
-  // ✅ OGPメタタグ付きHTMLを返す
+  // OGPメタタグ付きHTML
   const html = `
     <!DOCTYPE html>
     <html lang="ja">
@@ -29,15 +30,17 @@ export default async function handler(req, res) {
         <meta property="og:description" content="${data.description || ""}" />
         <meta property="og:url" content="${data.url}" />
         <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta http-equiv="refresh" content="1; url=${data.url}" />
+        <meta name="twitter:card" content="summary" />
+        <meta http-equiv="refresh" content="2; url=${data.url}" />
         <title>${data.title || "リダイレクト中..."}</title>
       </head>
       <body>
-        <p>🔁 リンク先へ移動中: <a href="${data.url}">${data.url}</a></p>
+        <h2>🔗 ${data.title || "移動中..."}</h2>
+        <p>${data.description || ""}</p>
+        <p>➡ <a href="${data.url}">${data.url}</a> に移動します</p>
       </body>
     </html>
   `;
 
-  res.status(200).send(html);
+  res.status(200).setHeader("Content-Type", "text/html").send(html);
 }
