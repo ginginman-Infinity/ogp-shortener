@@ -1,55 +1,22 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>リンク短縮ツール</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      max-width: 500px;
-      margin: 50px auto;
-      padding: 20px;
-      background: #f9f9f9;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-    }
-    input, textarea, button {
-      width: 100%;
-      margin-top: 10px;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #result {
-      margin-top: 15px;
-      text-align: center;
-    }
-  </style>
 </head>
-<body>
-  <h1>🔗 OGP付きリンク短縮ツール</h1>
+<body style="font-family: sans-serif; text-align: center; margin-top: 40px;">
+  <h1>🔗 リンク短縮ツール</h1>
 
-  <input type="text" id="urlInput" placeholder="短縮したいURLを入力">
-  <input type="text" id="titleInput" placeholder="タイトル（任意）">
-  <textarea id="descInput" placeholder="説明文（任意）" rows="3"></textarea>
-  <input type="text" id="imageInput" placeholder="画像URL（任意）">
+  <div style="margin: 20px auto; max-width: 400px;">
+    <input id="url" placeholder="短縮したいURL" style="width:100%;padding:10px;margin-bottom:10px;"><br>
+    <input id="title" placeholder="タイトル (任意)" style="width:100%;padding:10px;margin-bottom:10px;"><br>
+    <input id="desc" placeholder="説明 (任意)" style="width:100%;padding:10px;margin-bottom:10px;"><br>
+    <input id="image" placeholder="画像URL (任意)" style="width:100%;padding:10px;margin-bottom:10px;"><br>
+    <button id="create" style="padding:10px 20px;">短縮リンクを作成</button>
+  </div>
 
-  <button id="createBtn">短縮する</button>
-  <p id="result"></p>
+  <div id="result" style="margin-top: 20px; font-size: 1.1em;"></div>
 
   <script type="module" src="./create.js"></script>
 </body>
