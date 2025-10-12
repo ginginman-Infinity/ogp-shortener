@@ -1,41 +1,52 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const supabase = createClient(
-  "https://jfpccwjwsgxkpnddnkrn.supabase.co",
-  "YOUR_SERVICE_ROLE_KEY"
-);
+const supabaseUrl = "https://jfpccwjwsgxkpnddnkrn.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmcGNjd2p3c2d4a3BuZGRua3JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2MTAzNzUsImV4cCI6MjA3NTE4NjM3NX0.8gJuCKSE5KsaEG5GDGWH1brEBCfZ3dEHXtAELcX4KOk";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default async function handler(req, res) {
   const { code } = req.query;
 
   const { data, error } = await supabase
     .from("links")
-    .select("url, title, description")
-    .eq("code", code)
+    .select("*")
+    .eq("id", code)
     .single();
 
   if (error || !data) {
-    res.status(404).send("Not Found");
-    return;
+    return res.status(404).send("リンクが見つかりません");
   }
 
-  res.setHeader("Content-Type", "text/html");
-  res.send(`
+  // OGPを返すHTML
+  const html = `
     <!DOCTYPE html>
     <html lang="ja">
     <head>
-      <meta charset="utf-8" />
-      <meta property="og:title" content="${data.title || 'リンク'}" />
-      <meta property="og:description" content="${data.description || ''}" />
-      <meta property="og:url" content="${data.url}" />
+      <meta charset="UTF-8" />
+      <meta property="og:title" content="${data.title || "リンク"}" />
+      <meta property="og:description" content="${
+        data.description || "URL短縮リンク"
+      }" />
+      <meta property="og:url" content="https://${
+        req.headers.host
+      }/api/ogp/${code}" />
+      <meta property="og:type" content="website" />
       <meta name="twitter:card" content="summary" />
-      <meta http-equiv="refresh" content="1; url=${data.url}" />
-      <title>${data.title || "リンク先に移動中..."}</title>
+      <title>${data.title || "リンク"}</title>
+      <script>
+        setTimeout(() => {
+          window.location.href = "https://ginginman-infinity.github.io/ogp-shortener/redirect.html?code=${code}";
+        }, 1000);
+      </script>
     </head>
     <body>
-      <p>🔗 ${data.description || ""}</p>
-      <p>数秒後に <a href="${data.url}">こちら</a> に移動します。</p>
+      <p>リダイレクト中...</p>
     </body>
     </html>
-  `);
+  `;
+
+  res.setHeader("Content-Type", "text/html");
+  res.status(200).send(html);
 }
